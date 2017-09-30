@@ -16,4 +16,4 @@ julia> run(raw"echo $SHELL", capture_output=true)
 ### Notes
 
 * Change default shell by calling `useshell("powershell")`.
-* In Windows, the code page would be changed to 65001 after running.
+* In Windows, the code page may be changed to 65001 after running.
