@@ -1,5 +1,9 @@
 # Shell
 
+**WARN**
+* The package is doing type piracy (extend Base.run), which is a bad practise.
+* And DO NOT write buggy code like this!
+
 Now you can run string commands!
 Supports `cmd` and `powershell` in Windows!
 
