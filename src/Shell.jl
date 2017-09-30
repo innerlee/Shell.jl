@@ -22,7 +22,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
     if is_windows()
         if shell == "cmd"
             file = "$(tempname()).bat"
-            open(f -> println(f, cmd), file, "w")
+            open(f -> println(f, "chcp 65001\r\n", cmd), file, "w")
             if capture_output
                 return readstring(`$file`)
             else
@@ -30,7 +30,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
             end
         elseif shell == "powershell"
             file = "$(tempname()).ps1"
-            open(f -> println(f, cmd), file, "w")
+            open(f -> println(f, "chcp 65001\r\n", cmd), file, "w")
             if capture_output
                 return readstring(`powershell -command $file`)
             else
