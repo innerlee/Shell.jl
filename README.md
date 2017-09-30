@@ -8,6 +8,6 @@ julia> using Shell
 julia> run("echo bufan")
 bufan
 
-julia> RUN(raw"echo $PATH")
+julia> run(raw"echo $PATH")
 /usr/local/sbin:/usr/local/bin
 ```
