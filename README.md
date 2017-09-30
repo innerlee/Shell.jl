@@ -23,6 +23,12 @@ julia> Shell.run(raw"echo $SHELL", capture_output=true)
 "/usr/bin/zsh"
 ```
 
+### Installation
+
+```julia
+julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
+```
+
 ### Notes
 
 * Change default shell by calling `Shell.useshell("powershell")`.
