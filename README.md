@@ -2,7 +2,7 @@
 
 **WARN**
 The implementation basically put the string into a script file and run that file.
-So it is error prone because you have to deal with all the subtle stuff like escaping spaces.
+So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces.
 See the discussions [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163).
 The correct way is to learn the `Cmd` object and perhaps the `Glob.jl` package as pointed out [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163/5).
 
