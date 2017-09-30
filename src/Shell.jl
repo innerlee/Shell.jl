@@ -26,9 +26,9 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
             error("Only support `cmd` in Windows currently...")
         else
             if capture_output
-                return readstring(`'$file'`)
+                return readstring(`$file`)
             else
-                return run(`'$file'`)
+                return run(`$file`)
             end
         end
     end
