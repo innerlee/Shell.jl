@@ -1,5 +1,8 @@
 # Shell
 
+[![Build Status](https://travis-ci.org/innerlee/Shell.jl.svg?branch=master)](https://travis-ci.org/innerlee/Shell.jl)
+[![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
+
 Now you can run string commands!
 Supports `cmd` and `powershell` in Windows!
 
