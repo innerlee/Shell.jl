@@ -1,11 +1,5 @@
 module Shell
 
-import Base.run
-
-export
-    useshell,
-    run
-
 SHELL = is_windows() ? "cmd" : "zsh"
 
 """
@@ -27,7 +21,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
                 readstring(`chcp 65001`)
                 return readstring(`$file`)
             else
-                return run(`$file`)
+                return Base.run(`$file`)
             end
         elseif shell == "powershell"
             file = "$(tempname()).ps1"
@@ -36,7 +30,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
                 readstring(`chcp 65001`)
                 return readstring(`powershell -command $file`)
             else
-                return run(`powershell -command $file`)
+                return Base.run(`powershell -command $file`)
             end
         else
             error("Only support `cmd` and `powershell` in Windows.")
@@ -48,7 +42,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false)
         if capture_output
             return readstring(`$shell $file`)
         else
-            return run(`$shell $file`)
+            return Base.run(`$shell $file`)
         end
     end
 end
