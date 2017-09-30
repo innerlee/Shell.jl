@@ -10,6 +10,9 @@ bufan
 
 julia> run(raw"echo $PATH")
 /usr/local/sbin:/usr/local/bin
+
+julia> run(raw"echo $SHELL", capture_output=true)
+"/usr/bin/zsh\n"
 ```
 
 ### Notes
