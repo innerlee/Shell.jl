@@ -56,7 +56,10 @@ julia> Shell.run("rm 'temp file'*")
 """
 function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
              chomp=CHOMP, dryrun=DRYRUN, source=SOURCE)
-    dryrun && return cmd
+    if dryrun
+        println(cmd)
+        return cmd
+    end
     if is_windows()
         if shell == "cmd"
             file = "$(tempname()).bat"
