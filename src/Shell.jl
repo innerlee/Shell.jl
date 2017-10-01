@@ -7,7 +7,8 @@ CHOMP = true
 SOURCE = true
 
 """
-    run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP, dryrun=false)
+    run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
+        dryrun=false, source=true)
 
 Run your command string in shell.
 
