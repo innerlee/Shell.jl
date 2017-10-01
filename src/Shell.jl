@@ -4,6 +4,7 @@ export @esc_cmd
 
 SHELL = is_windows() ? "cmd" : "zsh"
 CHOMP = true
+SOURCE = true
 
 """
     run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP, dryrun=false)
@@ -50,7 +51,8 @@ julia> Shell.run("rm 'temp file'*")
   using `useshell("other_shell")`.
 * In Windows, shell should be `cmd` or `powershell`.
 """
-function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP, dryrun=false)
+function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
+             dryrun=false, source=true)
     dryrun && return cmd
     if is_windows()
         if shell == "cmd"
@@ -77,7 +79,14 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP
         end
     else
         file = tempname()
-        open(f -> println(f, cmd), file, "w")
+        open(file, "w") do f
+            if source
+                SHELL == "zsh"  ? println(f, "source ~/.zshrc") :
+                SHELL == "bash" ? println(f, "source ~/.bashrc") :
+                warn("Please make a PR to support source your shell!")
+            end
+            println(f, cmd)
+        end
 
         if capture_output
             return chomp ? readchomp(`$shell $file`) : readstring(`$shell $file`)
@@ -105,6 +114,16 @@ Set whether chomp the output (default is true).
 function setchomp(chomp::Bool)
     global CHOMP
     CHOMP = chomp
+end
+
+"""
+    issource(source::Bool)
+
+Whether source the rc file (e.g. `.zshrc`) before run script (default is true).
+"""
+function issource(source::Bool)
+    global SOURCE
+    SOURCE = source
 end
 
 # """
