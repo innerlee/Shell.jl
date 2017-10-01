@@ -26,10 +26,10 @@ julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
 ```julia
 julia> using Shell
 
-julia> Shell.run(raw"echo \$SHELL", capture_output=true)
+julia> Shell.run(raw"echo $SHELL", capture_output=true)
 "/usr/bin/zsh"
 
-julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
+julia> Shell.run(raw"for i in bu fan; do echo $i; done")
 bu
 fan
 
@@ -41,7 +41,7 @@ julia> files = ["temp file 1", "temp file 2"]
 julia> filelist = esc`$files.txt`
 "'temp file 1.txt' 'temp file 2.txt'"
 
-julia> Shell.run("touch \$filelist")
+julia> Shell.run("touch $filelist")
 
 julia> Shell.run("ls > 'temp file 0.txt'")
 
