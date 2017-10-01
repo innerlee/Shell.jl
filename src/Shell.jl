@@ -1,6 +1,6 @@
 module Shell
 
-export @esc_cmd, @s_cmd
+export @esc_cmd
 
 SHELL = Sys.iswindows() ? "cmd" : "zsh"
 CHOMP = true
