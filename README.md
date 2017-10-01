@@ -16,39 +16,39 @@ Now you can run string commands!
 
 Supports `cmd` and `powershell` in Windows!
 
-```julia
-julia> using Shell
-
-julia> Shell.run(raw"for i in bu fan; do echo $i; done")
-bu
-fan
-
-julia> Shell.run(raw"echo $SHELL", capture_output=true)
-"/usr/bin/zsh"
-```
-
 ### Installation
 
 ```julia
 julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
 ```
 
-### Examples
+### Usage
 ```julia
-julia> Shell.run("ls > temp\\ file\\ 0.txt")
+julia> using Shell
 
-julia> Shell.run("cat 'temp file 0.txt' | grep temp")
-temp file 0.txt
+julia> Shell.run(raw"echo \$SHELL", capture_output=true)
+"/usr/bin/zsh"
+
+julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
+bu
+fan
 
 julia> files = ["temp file 1", "temp file 2"]
 2-element Array{String,1}:
  "temp file 1"
  "temp file 2"
-
+ 
 julia> filelist = esc`$files.txt`
 "'temp file 1.txt' 'temp file 2.txt'"
 
-julia> Shell.run("touch $filelist")
+julia> Shell.run("touch \$filelist")
+
+julia> Shell.run("ls > 'temp file 0.txt'")
+
+julia> Shell.run("cat 'temp file 0.txt' | grep temp")
+temp file 0.txt
+temp file 1.txt
+temp file 2.txt
 
 julia> Shell.run("rm 'temp file'*")
 ```
