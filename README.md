@@ -4,7 +4,7 @@
 The implementation basically put the string into a script file and run that file.
 So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces, quotes, etc.
 See the discussions [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163).
-(You can use `` esc`your argmuments` `` to take advantage of the buildin escaping of `Cmd` objects, though.)
+(You can use `` esc`your argmuments` `` to take advantage of the built-in escaping of `Cmd` objects, though.)
 The correct way is to learn the `Cmd` object and perhaps the `Glob.jl` package as pointed out [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163/5).
 So, it is good for running simple things like `ls`, `echo`, etc.
 But **do not** use this in your scripts unless you know exactly what this package does and not-does.
