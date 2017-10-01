@@ -1,8 +1,8 @@
 using Shell
-using Base.Test
+using Test
 
 @testset "ls" begin
-    if is_windows()
+    if Sys.iswindows()
         @test Shell.run("dir") == nothing
         @test split(Shell.run("cd", capture_output=true))[end] == pwd()
         Shell.setchomp(false)

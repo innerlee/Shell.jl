@@ -2,7 +2,7 @@ module Shell
 
 export @esc_str
 
-SHELL = is_windows() ? "cmd" : "zsh"
+SHELL = Sys.iswindows() ? "cmd" : "zsh"
 CHOMP = true
 
 """
@@ -50,12 +50,12 @@ julia> Shell.run("rm 'temp file'*")
 * In Windows, shell should be `cmd` or `powershell`.
 """
 function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP)
-    if is_windows()
+    if Sys.iswindows()
         if shell == "cmd"
             file = "$(tempname()).bat"
             open(f -> println(f, cmd), file, "w")
             if capture_output
-                readstring(`chcp 65001`)
+                read(`chcp 65001`, String)
                 return chomp ? readchomp(`$file`) : readstring(`$file`)
             else
                 return Base.run(`$file`)
@@ -66,7 +66,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP
             if capture_output
                 readstring(`chcp 65001`)
                 return chomp ? readchomp(`powershell -command $file`) :
-                               readstring(`powershell -command $file`)
+                               read(`powershell -command $file`, String)
             else
                 return Base.run(`powershell -command $file`)
             end
@@ -78,7 +78,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP
         open(f -> println(f, cmd), file, "w")
 
         if capture_output
-            return chomp ? readchomp(`$shell $file`) : readstring(`$shell $file`)
+            return chomp ? readchomp(`$shell $file`) : read(`$shell $file`, String)
         else
             return Base.run(`$shell $file`)
         end
