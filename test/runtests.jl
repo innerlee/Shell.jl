@@ -8,8 +8,6 @@ using Base.Test
         Shell.setchomp(false)
         @test endswith(Shell.run("pwd", capture_output=true), "\n")
 
-        @test Shell.run("type nul > your_file.txt")
-
         Shell.useshell("powershell")
         Shell.setchomp(true)
         @test Shell.run("ls") == nothing
