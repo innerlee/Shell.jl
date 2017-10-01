@@ -7,7 +7,8 @@ See the discussions [here](https://discourse.julialang.org/t/a-small-package-to-
 (You can use `` esc`your argmuments` `` to take advantage of the built-in escaping of `Cmd` objects, though.)
 The correct way is to learn the `Cmd` object and perhaps the `Glob.jl` package as pointed out [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163/5).
 So, it is good for running simple things like `ls`, `echo`, etc.
-But **do not** use this in your scripts unless you know exactly what this package does and not-does.
+But **DO NOT** use this in your scripts and do not write code like this.
+It is not secure and not safe.
 
 [![Build Status](https://travis-ci.org/innerlee/Shell.jl.svg?branch=master)](https://travis-ci.org/innerlee/Shell.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
