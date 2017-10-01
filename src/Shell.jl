@@ -2,13 +2,14 @@ module Shell
 
 export @esc_cmd
 
-SHELL = is_windows() ? "cmd" : "zsh"
-CHOMP = true
-SOURCE = true
-DRYRUN = false
+SHELL   = is_windows() ? "cmd" : "zsh"
+CHOMP   = true
+SOURCE  = true
+DRYRUN  = false
+CAPTURE = false
 
 """
-    run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
+    run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE, chomp=CHOMP,
         dryrun=DRYRUN, source=SOURCE)
 
 Run your command string in shell.
@@ -17,7 +18,7 @@ Run your command string in shell.
 ```jldoctest
 julia> using Shell
 
-julia> Shell.run(raw"echo \$SHELL", capture_output=true)
+julia> Shell.run(raw"echo \$SHELL", capture_output=true, source=false)
 "/usr/bin/zsh"
 
 julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
@@ -50,11 +51,11 @@ julia> Shell.run("rm 'temp file'*")
 * To avoid escaping `\$` everytime, you can use raw string,
   like `raw"echo \$PATH"`
 * You can change the default shell (`zsh` in linux and `cmd` in windows)
-  using `useshell("other_shell")`.
+  using `setshell("other_shell")`.
 * In Windows, shell should be `cmd` or `powershell`.
 """
-function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
-             dryrun=DRYRUN, source=SOURCE)
+function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
+             chomp=CHOMP, dryrun=DRYRUN, source=SOURCE)
     dryrun && return cmd
     if is_windows()
         if shell == "cmd"
@@ -99,11 +100,11 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP
 end
 
 """
-    useshell(shell::AbstractString)
+    setshell(shell::AbstractString)
 
 Specify which shell to use (Windows defaults to `cmd`, and `zsh` otherwise).
 """
-function useshell(shell::AbstractString)
+function setshell(shell::AbstractString)
     global SHELL
     SHELL = shell
 end
@@ -119,23 +120,33 @@ function setchomp(chomp::Bool)
 end
 
 """
-    issource(source::Bool)
+    setissource(source::Bool)
 
 Whether source the rc file (e.g. `.zshrc`) before run script (default is true).
 """
-function issource(source::Bool)
+function setissource(source::Bool)
     global SOURCE
     SOURCE = source
 end
 
 """
-    isdryrun(dryrun::Bool)
+    setisdryrun(dryrun::Bool)
 
 Whether dryrun the rc file (e.g. `.zshrc`) before run script (default is true).
 """
-function isdryrun(dryrun::Bool)
+function setisdryrun(dryrun::Bool)
     global DRYRUN
     DRYRUN = dryrun
+end
+
+"""
+    setiscapture(capture::Bool)
+
+Whether capture the rc file (e.g. `.zshrc`) before run script (default is true).
+"""
+function setiscapture(capture::Bool)
+    global CAPTURE
+    CAPTURE = capture
 end
 
 # """

@@ -26,7 +26,7 @@ julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
 ```julia
 julia> using Shell
 
-julia> Shell.run(raw"echo $SHELL", capture_output=true)
+julia> Shell.run(raw"echo $SHELL", capture_output=true, source=false)
 "/usr/bin/zsh"
 
 julia> Shell.run(raw"for i in bu fan; do echo $i; done")
@@ -60,6 +60,6 @@ julia> Shell.run("rm 'temp file'*")
 
 * use `` esc`your string` `` to help you escape (not working for `cmd` in Windows).
 * use `dryrun=true` to check the command to be run without actually running.
-* Change default shell by calling `Shell.useshell("powershell")`.
+* Change default shell by calling `Shell.setshell("powershell")`.
 * The output chomps by default. Change this by calling `Shell.setchomp(false)`.
 * In Windows, the code page may be changed to 65001 after running.
