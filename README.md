@@ -37,11 +37,14 @@ julia> files = ["temp file 1", "temp file 2"]
 2-element Array{String,1}:
  "temp file 1"
  "temp file 2"
- 
+
 julia> filelist = esc`$files.txt`
 "'temp file 1.txt' 'temp file 2.txt'"
 
 julia> Shell.run("touch $filelist")
+
+julia> Shell.run("touch $(esc`$files.txt`)", dryrun=true)
+"touch 'temp file 1.txt' 'temp file 2.txt'"
 
 julia> Shell.run("ls > 'temp file 0.txt'")
 
@@ -56,6 +59,7 @@ julia> Shell.run("rm 'temp file'*")
 ### Notes
 
 * use `` esc`your string` `` to help you escape (not working for `cmd` in Windows).
+* use `dryrun=true` to check the command to be run without actually running.
 * Change default shell by calling `Shell.useshell("powershell")`.
 * The output chomps by default. Change this by calling `Shell.setchomp(false)`.
 * In Windows, the code page may be changed to 65001 after running.

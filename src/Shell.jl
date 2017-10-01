@@ -6,7 +6,7 @@ SHELL = is_windows() ? "cmd" : "zsh"
 CHOMP = true
 
 """
-    run(cmd::AbstractString; shell=SHELL, capture_output=false)
+    run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP, dryrun=false)
 
 Run your command string in shell.
 
@@ -42,6 +42,7 @@ julia> Shell.run("rm 'temp file'*")
 ```
 
 * You should properly escape all special characters manually.
+* use `dryrun=true` to check the command to be run without actually running.
 * To capture output, set `capture_output=true`.
 * To avoid escaping `\$` everytime, you can use raw string,
   like `raw"echo \$PATH"`
@@ -49,7 +50,8 @@ julia> Shell.run("rm 'temp file'*")
   using `useshell("other_shell")`.
 * In Windows, shell should be `cmd` or `powershell`.
 """
-function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP)
+function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP, dryrun=false)
+    dryrun && return cmd
     if is_windows()
         if shell == "cmd"
             file = "$(tempname()).bat"
