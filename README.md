@@ -43,8 +43,8 @@ julia> filelist = esc`$files.txt`
 
 julia> Shell.run("touch $filelist")
 
-julia> Shell.run("touch $(esc`$files.txt`)", dryrun=true)
-"touch 'temp file 1.txt' 'temp file 2.txt'"
+julia> Shell.run("touch $(esc`$files.$["txt","md"]`)", dryrun=true)
+"touch 'temp file 1.txt' 'temp file 1.md' 'temp file 2.txt' 'temp file 2.md'"
 
 julia> Shell.run("ls > 'temp file 0.txt'")
 
