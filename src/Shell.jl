@@ -1,5 +1,7 @@
 module Shell
 
+export @esc_str
+
 SHELL = is_windows() ? "cmd" : "zsh"
 CHOMP = true
 
@@ -8,6 +10,7 @@ CHOMP = true
 
 Run your command string in shell.
 
+* You should properly escape all special characters manually.
 * To capture output, set `capture_output=true`.
 * To avoid escaping `\$` everytime, you can use raw string,
   like `raw"echo \$PATH"`
@@ -69,6 +72,47 @@ Set whether chomp the output (default is true).
 function setchomp(chomp::Bool)
     global CHOMP
     CHOMP = chomp
+end
+
+"""
+    @esc_str -> String
+
+Help you escape special characters for the shell.
+
+# Examples
+```jldoctest
+julia> files = ["temp file 1", "temp file 2"]
+2-element Array{String,1}:
+ "temp file 1"
+ "temp file 2"
+
+julia> filelist = esc"\$files.txt"
+"'temp file 1.txt' 'temp file 2.txt'"
+
+julia> Shell.run("touch \$filelist")
+
+julia> Shell.run("rm \$filelist")
+```
+
+Be careful, the escape treat space separated terms individually.
+Put them into a varible to get properly escaped.
+
+# Examples
+```jldoctest
+julia> esc"temp file 0.txt"
+"temp file 0.txt"
+
+julia> file = "temp file 0.txt"
+"temp file 0.txt"
+
+julia> esc"\$file"
+"'temp file 0.txt'"
+```
+
+* Not working for `cmd` in Windows because it treats single quotes differently.
+"""
+macro esc_str(s)
+    :(string(@cmd $s)[2:end-1])
 end
 
 end # module

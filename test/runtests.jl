@@ -8,6 +8,8 @@ using Base.Test
         Shell.setchomp(false)
         @test endswith(Shell.run("pwd", capture_output=true), "\n")
 
+        @test Shell.run("type nul > your_file.txt")
+
         Shell.useshell("powershell")
         Shell.setchomp(true)
         @test Shell.run("ls") == nothing
@@ -22,5 +24,13 @@ using Base.Test
         Shell.setchomp(false)
         @test endswith(Shell.run("pwd", capture_output=true), "\n")
         @test !endswith(Shell.run("pwd", capture_output=true, chomp=true), "\n")
+
+        file = "temp file 0"
+        @test esc"$file" == "'temp file 0'"
+        files = ["temp file 1", "temp file 2"]
+        filelist = esc"$files.txt"
+        @test filelist == "'temp file 1.txt' 'temp file 2.txt'"
+        @test Shell.run("touch $filelist") == nothing
+        @test Shell.run("rm $filelist") == nothing
     end
 end
