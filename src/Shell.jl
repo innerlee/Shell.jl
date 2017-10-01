@@ -1,6 +1,6 @@
 module Shell
 
-export @esc_str
+export @esc_cmd, @s_cmd
 
 SHELL = Sys.iswindows() ? "cmd" : "zsh"
 CHOMP = true
@@ -26,7 +26,7 @@ julia> files = ["temp file 1", "temp file 2"]
  "temp file 1"
  "temp file 2"
 
-julia> filelist = esc"\$files.txt"
+julia> filelist = esc`\$files.txt`
 "'temp file 1.txt' 'temp file 2.txt'"
 
 julia> Shell.run("touch \$filelist")
@@ -105,45 +105,49 @@ function setchomp(chomp::Bool)
     CHOMP = chomp
 end
 
-"""
-    @esc_str -> String
+# """
+#     @esc_str -> String
 
-Help you escape special characters for the shell.
+# Help you escape special characters for the shell.
 
-# Examples
-```jldoctest
-julia> files = ["temp file 1", "temp file 2"]
-2-element Array{String,1}:
- "temp file 1"
- "temp file 2"
+# # Examples
+# ```jldoctest
+# julia> files = ["temp file 1", "temp file 2"]
+# 2-element Array{String,1}:
+#  "temp file 1"
+#  "temp file 2"
 
-julia> filelist = esc"\$files.txt"
-"'temp file 1.txt' 'temp file 2.txt'"
+# julia> filelist = esc`\$files.txt`
+# "'temp file 1.txt' 'temp file 2.txt'"
 
-julia> Shell.run("touch \$filelist")
+# julia> Shell.run("touch \$filelist")
 
-julia> Shell.run("rm \$filelist")
-```
+# julia> Shell.run("rm \$filelist")
+# ```
 
-Be careful, the escape treat space separated terms individually.
-Put them into a varible to get properly escaped.
+# Be careful, the escape treat space separated terms individually.
+# Put them into a varible to get properly escaped.
 
-# Examples
-```jldoctest
-julia> esc"temp file 0.txt"
-"temp file 0.txt"
+# # Examples
+# ```jldoctest
+# julia> esc`temp file 0.txt`
+# "temp file 0.txt"
 
-julia> file = "temp file 0.txt"
-"temp file 0.txt"
+# julia> file = "temp file 0.txt"
+# "temp file 0.txt"
 
-julia> esc"\$file"
-"'temp file 0.txt'"
-```
+# julia> esc`\$file`
+# "'temp file 0.txt'"
+# ```
 
-* Not working for `cmd` in Windows because it treats single quotes differently.
-"""
-macro esc_str(s)
-    :(string(@cmd $s)[2:end-1])
+# * Not working for `cmd` in Windows because it treats single quotes differently.
+# """
+macro esc_cmd(cmd)
+    esc(:(join(map((@cmd $cmd).exec) do arg
+        replace(sprint() do io
+            Base.print_shell_word(io, arg, Base.shell_special)
+        end, '`', "\\`")
+    end, ' ')))
 end
 
 end # module
