@@ -10,6 +10,37 @@ CHOMP = true
 
 Run your command string in shell.
 
+# Examples
+```jldoctest
+julia> using Shell
+
+julia> Shell.run(raw"echo \$SHELL", capture_output=true)
+"/usr/bin/zsh"
+
+julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
+bu
+fan
+
+julia> files = ["temp file 1", "temp file 2"]
+2-element Array{String,1}:
+ "temp file 1"
+ "temp file 2"
+
+julia> filelist = esc"\$files.txt"
+"'temp file 1.txt' 'temp file 2.txt'"
+
+julia> Shell.run("touch \$filelist")
+
+julia> Shell.run("ls > 'temp file 0.txt'")
+
+julia> Shell.run("cat 'temp file 0.txt' | grep temp")
+temp file 0.txt
+temp file 1.txt
+temp file 2.txt
+
+julia> Shell.run("rm 'temp file'*")
+```
+
 * You should properly escape all special characters manually.
 * To capture output, set `capture_output=true`.
 * To avoid escaping `\$` everytime, you can use raw string,

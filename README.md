@@ -40,8 +40,6 @@ julia> Shell.run("ls > temp\\ file\\ 0.txt")
 julia> Shell.run("cat 'temp file 0.txt' | grep temp")
 temp file 0.txt
 
-julia> Shell.run("rm 'temp file'*")
-
 julia> files = ["temp file 1", "temp file 2"]
 2-element Array{String,1}:
  "temp file 1"
@@ -52,7 +50,7 @@ julia> filelist = esc"$files.txt"
 
 julia> Shell.run("touch $filelist")
 
-julia> Shell.run("rm $filelist")
+julia> Shell.run("rm 'temp file'*")
 ```
 
 ### Notes
