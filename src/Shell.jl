@@ -5,10 +5,11 @@ export @esc_cmd
 SHELL = is_windows() ? "cmd" : "zsh"
 CHOMP = true
 SOURCE = true
+DRYRUN = false
 
 """
     run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
-        dryrun=false, source=true)
+        dryrun=DRYRUN, source=SOURCE)
 
 Run your command string in shell.
 
@@ -53,7 +54,7 @@ julia> Shell.run("rm 'temp file'*")
 * In Windows, shell should be `cmd` or `powershell`.
 """
 function run(cmd::AbstractString; shell=SHELL, capture_output=false, chomp=CHOMP,
-             dryrun=false, source=true)
+             dryrun=DRYRUN, source=SOURCE)
     dryrun && return cmd
     if is_windows()
         if shell == "cmd"
@@ -125,6 +126,16 @@ Whether source the rc file (e.g. `.zshrc`) before run script (default is true).
 function issource(source::Bool)
     global SOURCE
     SOURCE = source
+end
+
+"""
+    isdryrun(dryrun::Bool)
+
+Whether dryrun the rc file (e.g. `.zshrc`) before run script (default is true).
+"""
+function isdryrun(dryrun::Bool)
+    global DRYRUN
+    DRYRUN = dryrun
 end
 
 # """
