@@ -57,8 +57,7 @@ julia> Shell.run("rm 'temp file'*")
 function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
              chomp=CHOMP, dryrun=DRYRUN, source=SOURCE)
     if dryrun
-        println(cmd)
-        return cmd
+        capture_output ? return cmd : return println(cmd)
     end
     if is_windows()
         if shell == "cmd"
