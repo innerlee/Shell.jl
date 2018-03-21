@@ -101,6 +101,14 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
     end
 end
 
+function runfile(file; background=true, shell=SHELL)
+    if background
+        return spawn(detach(`$shell $file`))
+    else
+        return Base.run(`$shell $file`)
+    end
+end
+
 """
     setshell(shell::AbstractString)
 
