@@ -2,7 +2,7 @@ module Shell
 
 export @esc_cmd
 
-SHELL   = is_windows() ? "cmd" : "zsh"
+SHELL   = Sys.iswindows() ? "cmd" : "zsh"
 CHOMP   = true
 SOURCE  = true
 DRYRUN  = false
@@ -59,7 +59,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
     if dryrun
         capture_output ? (return cmd) : (return println(cmd))
     end
-    if is_windows()
+    if Sys.iswindows()
         if shell == "cmd"
             file = "$(tempname()).bat"
             open(f -> println(f, cmd), file, "w")
