@@ -30,9 +30,9 @@ julia> using Shell
 julia> Shell.run(raw"echo $SHELL", capture_output=true, source=false)
 "/usr/bin/zsh"
 
-julia> Shell.run(raw"for i in bu fan; do echo $i; done")
-bu
-fan
+julia> Shell.run(raw"for i in dust junk; do echo $i; done")
+dust
+junk
 
 julia> files = ["temp file 1", "temp file 2"]
 2-element Array{String,1}:
