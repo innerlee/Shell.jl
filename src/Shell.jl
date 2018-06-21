@@ -64,8 +64,8 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
             file = "$(tempname()).bat"
             open(f -> println(f, cmd), file, "w")
             if capture_output
-                readstring(`chcp 65001`)
-                return chomp ? readchomp(`$file`) : readstring(`$file`)
+                read(`chcp 65001`, String)
+                return chomp ? readchomp(`$file`) : read(`$file`, String)
             else
                 return Base.run(`$file`)
             end
@@ -73,9 +73,9 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
             file = "$(tempname()).ps1"
             open(f -> println(f, cmd), file, "w")
             if capture_output
-                readstring(`chcp 65001`)
+                read(`chcp 65001`, String)
                 return chomp ? readchomp(`powershell -command $file`) :
-                               readstring(`powershell -command $file`)
+                               read(`powershell -command $file`, String)
             else
                 return Base.run(`powershell -command $file`)
             end
@@ -94,7 +94,7 @@ function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
         end
 
         if capture_output
-            return chomp ? readchomp(`$shell $file`) : readstring(`$shell $file`)
+            return chomp ? readchomp(`$shell $file`) : read(`$shell $file`, String)
         else
             return Base.run(`$shell $file`)
         end
