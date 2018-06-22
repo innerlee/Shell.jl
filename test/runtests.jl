@@ -1,5 +1,5 @@
 using Shell
-using Base.Test
+using Test
 
 @testset "ls" begin
     if Sys.iswindows()
