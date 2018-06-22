@@ -16,6 +16,8 @@ git:
 
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+  - pwd
+  - ls
   - julia --check-bounds=yes -e 'import Pkg; Pkg.instantiate(); Pkg.test(; coverage=true)'
 
 after_success:
