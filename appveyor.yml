@@ -41,4 +41,6 @@ build_script:
   - C:\projects\julia\bin\julia -e "versioninfo(); import Pkg; Pkg.instantiate()"
 
 test_script:
+  - pwd
+  - dir
   - C:\projects\julia\bin\julia -e "import Pkg; Pkg.test(; coverage=true)"
