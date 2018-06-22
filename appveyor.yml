@@ -38,7 +38,7 @@ install:
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
   - IF EXIST .git\shallow (git fetch --unshallow)
-  - C:\projects\julia\bin\julia -e "versioninfo(); import Pkg; Pkg.instantiate()"
+  - C:\projects\julia\bin\julia -e "versioninfo(); using UUIDs; write("Project.toml", replace(read("Project.toml", String), r"uuid = .*?\n" =>"uuid = \"$(uuid4())\"")); import Pkg; Pkg.instantiate()"
 
 test_script:
   - pwd
