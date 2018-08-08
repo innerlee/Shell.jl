@@ -1,6 +1,0 @@
-authors = ["lizz <363664470@qq.com>"]
-name = "Shell"
-uuid = "59670936-762c-11e8-2258-df6a5a7e9b60"
-version = "0.1.0"
-
-[deps]
