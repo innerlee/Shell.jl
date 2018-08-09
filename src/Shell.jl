@@ -103,7 +103,7 @@ end
 
 function runfile(file; background=true, shell=SHELL)
     if background
-        return spawn(detach(`$shell $file`))
+        return Base.run(detach(`$shell $file`), wait=false)
     else
         return Base.run(`$shell $file`)
     end
