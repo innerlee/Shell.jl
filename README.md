@@ -11,7 +11,7 @@ But **DO NOT** use this in your serious scripts unless you have double checked i
 
 Now you can run string commands!
 
-Supports `cmd` `powershell` and `wsl` in Windows!
+Supports `cmd`, `powershell` and `wsl` in Windows!
 
 ### Installation
 
