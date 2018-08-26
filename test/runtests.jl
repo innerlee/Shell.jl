@@ -6,7 +6,7 @@ using Test
         @test Shell.run("dir") == nothing
         @test split(Shell.run("cd", capture=true))[end] == pwd()
         Shell.setchomp(false)
-        @test endswith(Shell.run("pwd", capture=true), "\n")
+        @test endswith(Shell.run("echo love", capture=true), "\n")
 
         Shell.setshell("powershell")
         Shell.setchomp(true)
