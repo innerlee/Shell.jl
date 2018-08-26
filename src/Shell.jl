@@ -2,14 +2,14 @@ module Shell
 
 export @esc_cmd
 
-SHELL   = Sys.iswindows() ? "cmd" : "zsh"
+SHELL   = Sys.iswindows() ? "cmd" : readchomp(pipeline(`getent passwd $(ENV["LOGNAME"])`, `cut -d: -f7`))
 CHOMP   = true
-SOURCE  = true
-DRYRUN  = false
+SOURCE  = false
 CAPTURE = false
+DRYRUN  = false
 
 """
-    run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE, chomp=CHOMP,
+    run(cmd::AbstractString; shell=SHELL, capture=CAPTURE, chomp=CHOMP,
         dryrun=DRYRUN, source=SOURCE)
 
 Run your command string in shell.
@@ -18,7 +18,7 @@ Run your command string in shell.
 ```jldoctest
 julia> using Shell
 
-julia> Shell.run(raw"echo \$SHELL", capture_output=true, source=false)
+julia> Shell.run(raw"echo \$SHELL", capture=true, source=false)
 "/usr/bin/zsh"
 
 julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
@@ -47,67 +47,64 @@ julia> Shell.run("rm 'temp file'*")
 
 * You should properly escape all special characters manually.
 * use `dryrun=true` to check the command to be run without actually running.
-* To capture output, set `capture_output=true`.
+* To capture output, set `capture=true`.
 * To avoid escaping `\$` everytime, you can use raw string,
   like `raw"echo \$PATH"`
 * You can change the default shell (`zsh` in linux and `cmd` in windows)
   using `setshell("other_shell")`.
 * In Windows, shell should be `cmd` or `powershell`.
 """
-function run(cmd::AbstractString; shell=SHELL, capture_output=CAPTURE,
+function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
              chomp=CHOMP, dryrun=DRYRUN, source=SOURCE)
-    if dryrun
-        capture_output ? (return cmd) : (return println(cmd))
-    end
+    result = nothing
+    file = tempname()
+    pre_script = ""
+    command = ``
     if Sys.iswindows()
         if shell == "cmd"
-            file = "$(tempname()).bat"
-            open(f -> println(f, cmd), file, "w")
-            if capture_output
-                read(`chcp 65001`, String)
-                return chomp ? readchomp(`$file`) : read(`$file`, String)
-            else
-                return Base.run(`$file`)
-            end
+            file = "$file.bat"
+            pre_script = "chcp 65001 >nul"
+            command = `$file`
         elseif shell == "powershell"
-            file = "$(tempname()).ps1"
-            open(f -> println(f, cmd), file, "w")
-            if capture_output
-                read(`chcp 65001`, String)
-                return chomp ? readchomp(`powershell -command $file`) :
-                               read(`powershell -command $file`, String)
-            else
-                return Base.run(`powershell -command $file`)
-            end
+            file = "$file.ps1"
+            pre_script = raw"chcp 65001 >$null"
+            command = `powershell -command $file`
+        elseif shell == "wsl"
+            wslshell = split(readchomp(`wsl getent passwd \$LOGNAME`), ":")[end]
+            file = "$file.sh"
+            source && (pre_script = shell_source(wslshell))
+            ffile = replace(file, "\\" => "\\\\")
+            wslfile = readchomp(`wsl wslpath $ffile`)
+            command = `wsl $wslshell $wslfile`
         else
-            error("Only support `cmd` and `powershell` in Windows.")
+            @error("Only support cmd/powershell/wsl in Windows.")
         end
     else
-        file = tempname()
-        open(file, "w") do f
-            if source
-                SHELL == "zsh"  ? println(f, "source ~/.zshrc") :
-                SHELL == "bash" ? println(f, "source ~/.bashrc") :
-                warn("Please make a PR to support source your shell!")
-            end
-            println(f, cmd)
-        end
-
-        if capture_output
-            return chomp ? readchomp(`$shell $file`) : read(`$shell $file`, String)
-        else
-            return Base.run(`$shell $file`)
-        end
+        source && (pre_script = shell_source(shell))
+        command = `$shell $file`
     end
-end
 
-function runfile(file; background=true, shell=SHELL)
-    if background
-        return Base.run(detach(`$shell $file`), wait=false)
+    open(file, "w") do f
+        println(f, pre_script)
+        println(f, cmd)
+    end
+
+    if dryrun
+        result = read(file, String)
+    elseif capture
+        result = chomp ? readchomp(command) : read(command, String)
     else
-        return Base.run(`$shell $file`)
+        Base.run(command)
     end
+    rm(file)
+    return result
 end
+
+shell_source(shell) =
+    (endswith(shell, "/zsh") || shell == "zsh") ? "[ -f ~/.zshrc ] && source ~/.zshrc >/dev/null" :
+    (endswith(shell, "/bash") || shell == "bash") ? "[ -f ~/.bashrc ] && source ~/.bashrc" :
+    (endswith(shell, "/fish") || shell == "fish") ? "[ -f ~/.config/fish/config.fish ] && source ~/.config/fish/config.fish" :
+    (@warn("Please make a PR to support source your awesome `$shell` shell!"); "")
 
 """
     setshell(shell::AbstractString)
@@ -159,43 +156,43 @@ function setiscapture(capture::Bool)
     CAPTURE = capture
 end
 
-# """
-#     @esc_str -> String
+"""
+    @esc_str -> String
 
-# Help you escape special characters for the shell.
+Help you escape special characters for the shell.
 
-# # Examples
-# ```jldoctest
-# julia> files = ["temp file 1", "temp file 2"]
-# 2-element Array{String,1}:
-#  "temp file 1"
-#  "temp file 2"
+# Examples
+```jldoctest
+julia> files = ["temp file 1", "temp file 2"]
+2-element Array{String,1}:
+ "temp file 1"
+ "temp file 2"
 
-# julia> filelist = esc`\$files.txt`
-# "'temp file 1.txt' 'temp file 2.txt'"
+julia> filelist = esc`\$files.txt`
+"'temp file 1.txt' 'temp file 2.txt'"
 
-# julia> Shell.run("touch \$filelist")
+julia> Shell.run("touch \$filelist")
 
-# julia> Shell.run("rm \$filelist")
-# ```
+julia> Shell.run("rm \$filelist")
+```
 
-# Be careful, the escape treat space separated terms individually.
-# Put them into a varible to get properly escaped.
+Be careful, the escape treat space separated terms individually.
+Put them into a varible to get properly escaped.
 
-# # Examples
-# ```jldoctest
-# julia> esc`temp file 0.txt`
-# "temp file 0.txt"
+# Examples
+```jldoctest
+julia> esc`temp file 0.txt`
+"temp file 0.txt"
 
-# julia> file = "temp file 0.txt"
-# "temp file 0.txt"
+julia> file = "temp file 0.txt"
+"temp file 0.txt"
 
-# julia> esc`\$file`
-# "'temp file 0.txt'"
-# ```
+julia> esc`\$file`
+"'temp file 0.txt'"
+```
 
-# * Not working for `cmd` in Windows because it treats single quotes differently.
-# """
+* Not working for `cmd` in Windows because it treats single quotes differently.
+"""
 macro esc_cmd(cmd)
     esc(:(join(map((@cmd $cmd).exec) do arg
         replace(sprint() do io
