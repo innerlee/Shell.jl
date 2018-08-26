@@ -2,7 +2,7 @@ module Shell
 
 export @esc_cmd
 
-SHELL   = Sys.iswindows() ? "cmd" : readchomp(pipeline(`getent passwd $(ENV["LOGNAME"])`, `cut -d: -f7`))
+SHELL   = Sys.iswindows() ? "cmd" : readchomp(pipeline(`getent passwd $(get(ENV, "LOGNAME", "root"))`, `cut -d: -f7`))
 CHOMP   = true
 SOURCE  = false
 CAPTURE = false
