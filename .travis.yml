@@ -6,10 +6,14 @@ os:
   - osx
 
 julia:
+  - 1.0
   - nightly
 
 notifications:
   email: false
+
+before_script:
+  - export PATH=$HOME/.local/bin:$PATH
 
 git:
   depth: 99999999
@@ -18,10 +22,10 @@ script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - pwd
   - ls
-  - julia --check-bounds=yes -e 'using UUIDs; write("Project.toml", replace(read("Project.toml", String), r"uuid = .*?\n" =>"uuid = \"$(uuid4())\"")); import Pkg; Pkg.instantiate(); Pkg.test("Shell"; coverage=true)'
+  - julia --project --check-bounds=yes -e 'import Pkg; Pkg.build(); Pkg.test(; coverage=true)'
 
 after_success:
   # push coverage results to Coveralls
-  - julia -e 'import Pkg; cd(Pkg.dir("Shell")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())'
   # push coverage results to Codecov
-  - julia -e 'import Pkg; cd(Pkg.dir("Shell")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+  - julia --project -e 'import Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
