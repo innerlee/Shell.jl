@@ -22,7 +22,7 @@ script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - pwd
   - ls
-  - julia --project --check-bounds=yes -e 'import Pkg; Pkg.build(); Pkg.test(; coverage=true)'
+  - julia --project --check-bounds=yes -e 'import Pkg; Pkg.clone(pwd(), "Shell"); Pkg.build("Shell"); Pkg.test("Shell"; coverage=true)'
 
 after_success:
   # push coverage results to Coveralls
