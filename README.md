@@ -4,7 +4,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
 
 
-> **WARN**
+> **WARN**:
 The implementation basically put the string into a script file and run that file.
 So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces, quotes, etc.
 This tool is good for running simple things like `ls`, `echo`, etc.
