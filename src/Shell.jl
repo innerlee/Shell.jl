@@ -63,7 +63,7 @@ function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
     if Sys.iswindows()
         if shell == "cmd"
             file = "$file.bat"
-            pre_script = "chcp 65001 >nul"
+            pre_script = "@echo off\nchcp 65001 >nul"
             command = `$file`
         elseif shell == "powershell"
             file = "$file.ps1"
