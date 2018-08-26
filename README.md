@@ -27,8 +27,8 @@ julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
 ```julia
 julia> using Shell
 
-julia> Shell.run(raw"echo $SHELL", capture_output=true, source=false)
-"/usr/bin/zsh"
+julia> Shell.run(raw"echo $SHELL", capture=true)
+"/bin/zsh"
 
 julia> Shell.run(raw"for i in dust junk; do echo $i; done")
 dust

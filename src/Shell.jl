@@ -18,8 +18,8 @@ Run your command string in shell.
 ```jldoctest
 julia> using Shell
 
-julia> Shell.run(raw"echo \$SHELL", capture=true, source=false)
-"/usr/bin/zsh"
+julia> Shell.run(raw"echo \$SHELL", capture=true)
+"/bin/zsh"
 
 julia> Shell.run(raw"for i in bu fan; do echo \$i; done")
 bu
@@ -90,7 +90,7 @@ function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
     end
 
     if dryrun
-        result = read(file, String)
+        result = println(strip(read(file, String)))
     elseif capture
         result = chomp ? readchomp(command) : read(command, String)
     else
@@ -197,7 +197,7 @@ macro esc_cmd(cmd)
     esc(:(join(map((@cmd $cmd).exec) do arg
         replace(sprint() do io
             Base.print_shell_word(io, arg, Base.shell_special)
-        end, '`', "\\`")
+        end, '`' => "\\`")
     end, ' ')))
 end
 

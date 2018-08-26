@@ -4,24 +4,24 @@ using Test
 @testset "ls" begin
     if Sys.iswindows()
         @test Shell.run("dir") == nothing
-        @test split(Shell.run("cd", capture_output=true))[end] == pwd()
+        @test split(Shell.run("cd", capture=true))[end] == pwd()
         Shell.setchomp(false)
-        @test endswith(Shell.run("pwd", capture_output=true), "\n")
+        @test endswith(Shell.run("pwd", capture=true), "\n")
 
         Shell.setshell("powershell")
         Shell.setchomp(true)
         @test Shell.run("ls") == nothing
-        @test Shell.run("(Get-Item -Path . -Verbose).FullName", capture_output=true) == pwd()
+        @test Shell.run("(Get-Item -Path . -Verbose).FullName", capture=true) == pwd()
         Shell.setchomp(false)
-        @test endswith(Shell.run("pwd", capture_output=true), "\n")
-        @test !endswith(Shell.run("(Get-Item -Path . -Verbose).FullName", capture_output=true, chomp=true), "\n")
+        @test endswith(Shell.run("pwd", capture=true), "\n")
+        @test !endswith(Shell.run("(Get-Item -Path . -Verbose).FullName", capture=true, chomp=true), "\n")
     else
         Shell.setshell("bash")
         @test Shell.run("ls") == nothing
-        @test Shell.run("pwd", capture_output=true) == pwd()
+        @test Shell.run("pwd", capture=true) == pwd()
         Shell.setchomp(false)
-        @test endswith(Shell.run("pwd", capture_output=true), "\n")
-        @test !endswith(Shell.run("pwd", capture_output=true, chomp=true), "\n")
+        @test endswith(Shell.run("pwd", capture=true), "\n")
+        @test !endswith(Shell.run("pwd", capture=true, chomp=true), "\n")
 
         file = "temp file 0"
         @test esc`$file` == "'temp file 0'"
