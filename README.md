@@ -1,21 +1,17 @@
 # Shell
 
-**WARN**
-The implementation basically put the string into a script file and run that file.
-So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces, quotes, etc.
-See the discussions [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163).
-(You can use `` esc`your argmuments` `` to take advantage of the built-in escaping of `Cmd` objects, though.)
-The correct way is to learn the `Cmd` object and perhaps the `Glob.jl` package as pointed out [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163/5).
-So, it is good for running simple things like `ls`, `echo`, etc.
-But **DO NOT** use this in your scripts and do not write code like this.
-It is not secure and not safe.
-
 [![Build Status](https://travis-ci.org/innerlee/Shell.jl.svg?branch=master)](https://travis-ci.org/innerlee/Shell.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
 
+**WARN**
+> The implementation basically put the string into a script file and run that file.
+So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces, quotes, etc.
+This tool is good for running simple things like `ls`, `echo`, etc.
+But **DO NOT** use this in your serious scripts unless you have double checked its correctness.
+
 Now you can run string commands!
 
-Supports `cmd` and `powershell` in Windows!
+Supports `cmd` `powershell` and `wsl` in Windows!
 
 ### Installation
 
@@ -64,3 +60,9 @@ julia> Shell.run("rm 'temp file'*")
 * Change default shell by calling `Shell.setshell("powershell")`.
 * The output chomps by default. Change this by calling `Shell.setchomp(false)`.
 * In Windows, the code page may be changed to 65001 after running.
+
+### More Notes
+
+See the discussions [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163).
+(You can use `` esc`your argmuments` `` to take advantage of the built-in escaping of `Cmd` objects, though.)
+A "better" way is to learn the `Cmd` object and perhaps the `Glob.jl` package as pointed out [here](https://discourse.julialang.org/t/a-small-package-to-run-string-as-shell-command/6163/5).
