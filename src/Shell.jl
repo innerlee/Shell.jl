@@ -102,6 +102,14 @@ function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
     return result
 end
 
+function runfile(file; background=true, shell=SHELL)
+    if background
+        return Base.run(detach(`$shell $file`), wait=false)
+    else
+        return Base.run(`$shell $file`)
+    end
+end
+
 shell_source(shell) =
     (endswith(shell, "/zsh") || shell == "zsh") ? "[ -f ~/.zshrc ] && source ~/.zshrc >/dev/null" :
     (endswith(shell, "/bash") || shell == "bash") ? "[ -f ~/.bashrc ] && source ~/.bashrc" :
