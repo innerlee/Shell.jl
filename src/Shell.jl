@@ -9,6 +9,7 @@ CHOMP   = true
 SOURCE  = false
 CAPTURE = false
 DRYRUN  = false
+TMPDIR  = tempdir()
 
 """
     run(cmd::AbstractString; shell=SHELL, capture=CAPTURE, chomp=CHOMP,
@@ -59,7 +60,7 @@ julia> Shell.run("rm 'temp file'*")
 function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
              chomp=CHOMP, dryrun=DRYRUN, source=SOURCE)
     result = nothing
-    file = tempname()
+    file = joinpath(TMPDIR, basename(tempname()))
     pre_script = ""
     command = ``
     if Sys.iswindows()
@@ -89,6 +90,7 @@ function run(cmd::AbstractString; shell=SHELL, capture=CAPTURE,
     open(file, "w") do f
         println(f, pre_script)
         println(f, cmd)
+        flush(f)
     end
 
     if dryrun
@@ -124,6 +126,17 @@ Specify which shell to use (Windows defaults to `cmd`, and `zsh` otherwise).
 function setshell(shell::AbstractString)
     global SHELL
     SHELL = shell
+end
+
+"""
+    settmp(tmp::AbstractString)
+
+Set the temp folder, defaults to `/tmp/`.
+"""
+function settmp(tmp::AbstractString)
+    global TMPDIR
+    TMPDIR = tmp
+    mkpath(TMPDIR)
 end
 
 """
