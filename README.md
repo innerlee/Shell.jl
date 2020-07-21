@@ -3,22 +3,15 @@
 [![Build Status](https://travis-ci.org/innerlee/Shell.jl.svg?branch=master)](https://travis-ci.org/innerlee/Shell.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
 
+Now you can run string commands in Julia!
+
+Supports `cmd`, `powershell` and `wsl` in Windows!
 
 > **WARN**:
 The implementation basically put the string into a script file and run that file.
 So it is **error prone** because you have to deal with all the subtle stuff like escaping spaces, quotes, etc.
 This tool is good for running simple things like `ls`, `echo`, etc.
 But **do not** use this in your serious scripts unless you have double checked its correctness.
-
-Now you can run string commands!
-
-Supports `cmd`, `powershell` and `wsl` in Windows!
-
-### Installation
-
-```julia
-julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
-```
 
 ### Usage
 ```julia
@@ -52,6 +45,12 @@ temp file 1.txt
 temp file 2.txt
 
 julia> Shell.run("rm 'temp file'*")
+```
+
+### Installation
+
+```julia
+julia> Pkg.clone("https://github.com/innerlee/Shell.jl")
 ```
 
 ### Notes
