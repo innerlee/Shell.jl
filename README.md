@@ -3,6 +3,13 @@
 [![Build Status](https://travis-ci.org/innerlee/Shell.jl.svg?branch=master)](https://travis-ci.org/innerlee/Shell.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/v545p6s5rbiwtx2y?svg=true)](https://ci.appveyor.com/project/innerlee/shell-jl)
 
+```julia
+julia> using Shell
+
+julia> Shell.run("ls")
+appveyor.yml  LICENSE.md  README.md  REQUIRE  src  test
+```
+
 Now you can run string commands in Julia!
 
 Supports `cmd`, `powershell` and `wsl` in Windows!
@@ -14,6 +21,7 @@ This tool is good for running simple things like `ls`, `echo`, etc.
 But **do not** use this in your serious scripts unless you have double checked its correctness.
 
 ### Usage
+
 ```julia
 julia> using Shell
 
